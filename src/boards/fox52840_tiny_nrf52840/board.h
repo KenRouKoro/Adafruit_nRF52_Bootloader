@@ -60,7 +60,7 @@
 #define USB_DESC_CDC_ONLY_PID  0x0032
 
 //------------- UF2 -------------//
-#define UF2_PRODUCT_NAME   "FoxApplication Fox 52840 Tiny"
+#define UF2_PRODUCT_NAME   "FoxApplication Fox 52840 Tiny V1"
 #define UF2_VOLUME_LABEL   "FOX-BOOT"
 #define UF2_BOARD_ID       "Fox-52840-Tiny-v1"
 #define UF2_INDEX_URL      "https://www.foxapplication.com/"
