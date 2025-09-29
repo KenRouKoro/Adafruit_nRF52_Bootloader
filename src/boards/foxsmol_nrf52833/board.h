@@ -32,7 +32,7 @@
  *------------------------------------------------------------------*/
 #define LEDS_NUMBER           1
 #define LED_PRIMARY_PIN       _PINNUM(0, 31)
-#define LED_STATE_ON          0
+#define LED_STATE_ON          1
 
 #define NEOPIXELS_NUMBER      0
 
@@ -55,8 +55,8 @@
 // PR https://github.com/openmoko/openmoko-usb-oui/pull/34
 //--------------------------------------------------------------------+
 #define USB_DESC_VID           0x2fe3
-#define USB_DESC_UF2_PID       0x0033
-#define USB_DESC_CDC_ONLY_PID  0x0033
+#define USB_DESC_UF2_PID       0x0032
+#define USB_DESC_CDC_ONLY_PID  0x0032
 
 #define UF2_PRODUCT_NAME  "FoxApplication FoxSmol 52833 V1"
 #define UF2_VOLUME_LABEL  "FOX-BOOT"
