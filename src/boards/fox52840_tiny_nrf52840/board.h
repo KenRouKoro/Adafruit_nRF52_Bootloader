@@ -33,7 +33,7 @@
 // The board has 2 leds, but changing the number here causes OTA issues.
 #define LEDS_NUMBER           1
 #define LED_PRIMARY_PIN       _PINNUM(0, 15)
-#define LED_STATE_ON          0
+#define LED_STATE_ON          1
 
 #define NEOPIXELS_NUMBER      0
 
