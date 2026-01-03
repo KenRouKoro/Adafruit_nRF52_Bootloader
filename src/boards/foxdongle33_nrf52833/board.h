@@ -62,7 +62,7 @@
 
 //------------- UF2 -------------//
 #define UF2_PRODUCT_NAME   "FoxApplication FoxDobgle33 V1"
-#define UF2_VOLUME_LABEL   "FOX-BOOT-Dongle33"
+#define UF2_VOLUME_LABEL   "FOX-BOOT"
 #define UF2_BOARD_ID       "FoxDobgle33-v1"
 #define UF2_INDEX_URL      "https://www.foxapplication.com/"
 
