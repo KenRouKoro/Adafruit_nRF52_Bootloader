@@ -27,9 +27,6 @@
 
 #define _PINNUM(port, pin)    ((port)*32 + (pin))
 
-#define ENABLE_DCDC_1 1
-#define ENABLE_DCDC_0 1
-
 #define UICR_REGOUT0_VALUE UICR_REGOUT0_VOUT_2V7
 
 
@@ -38,8 +35,8 @@
  *------------------------------------------------------------------*/
 // The board has 2 leds, but changing the number here causes OTA issues.
 #define LEDS_NUMBER           2
-#define LED_PRIMARY_PIN       _PINNUM(0, 28)// green
-#define LED_SECONDARY_PIN     _PINNUM(0, 30)// red
+#define LED_PRIMARY_PIN       _PINNUM(0, 2)// green
+#define LED_SECONDARY_PIN     _PINNUM(0, 31)// red
 #define LED_STATE_ON          1
 
 #define NEOPIXELS_NUMBER      0
