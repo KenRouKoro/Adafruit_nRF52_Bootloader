@@ -54,9 +54,9 @@
 // USB PID from openmoko:
 // PR https://github.com/openmoko/openmoko-usb-oui/pull/34
 //--------------------------------------------------------------------+
-#define USB_DESC_VID           0x2fe3
-#define USB_DESC_UF2_PID       0x0032
-#define USB_DESC_CDC_ONLY_PID  0x0032
+#define USB_DESC_VID           0x1209
+#define USB_DESC_UF2_PID       0x7693
+#define USB_DESC_CDC_ONLY_PID  0x7693
 
 #define UF2_PRODUCT_NAME  "FoxApplication FoxSmol 52833 V1"
 #define UF2_VOLUME_LABEL  "FOX-BOOT"
