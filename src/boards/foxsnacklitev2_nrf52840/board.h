@@ -29,6 +29,8 @@
 
 #define UICR_REGOUT0_VALUE UICR_REGOUT0_VOUT_2V7
 
+#define DEVICE_NAME "FoxSnackLiteV2DFU"
+
 
 /*------------------------------------------------------------------*/
 /* LED
