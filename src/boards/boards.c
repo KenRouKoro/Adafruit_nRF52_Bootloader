@@ -377,6 +377,7 @@ static uint32_t secondary_cycle_length;
 #endif
 
 void led_tick(void) {
+#if LEDS_NUMBER > 0
   uint32_t millis = _systick_count;
 
   uint32_t cycle = millis % primary_cycle_length;
@@ -402,6 +403,7 @@ void led_tick(void) {
   #endif
   led_pwm_duty_cycle(LED_SECONDARY, duty_cycle);
   #endif
+#endif
 }
 
 static uint32_t rgb_color;
