@@ -31,12 +31,14 @@
 /*------------------------------------------------------------------*/
 /* LED
  *------------------------------------------------------------------*/
-#define LEDS_NUMBER           2
-#define LED_PRIMARY_PIN       _PINNUM(0, 2)// blue
-#define LED_SECONDARY_PIN     _PINNUM(0, 3)// red
+#define LEDS_NUMBER           1
+#define LED_PRIMARY_PIN       _PINNUM(0, 3) // red, also used for breathing
 #define LED_STATE_ON          1
 
-#define NEOPIXELS_NUMBER      0
+#define LED_RGB_RED_PIN       _PINNUM(0, 3)
+#define LED_RGB_GREEN_PIN     _PINNUM(0, 28)
+#define LED_RGB_BLUE_PIN      _PINNUM(0, 2)
+#define BOARD_RGB_BRIGHTNESS  0x202020
 
 /*------------------------------------------------------------------*/
 /* BUTTON

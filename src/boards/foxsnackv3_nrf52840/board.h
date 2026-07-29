@@ -28,6 +28,8 @@
 #define _PINNUM(port, pin)    ((port)*32 + (pin))
 
 #define UICR_REGOUT0_VALUE UICR_REGOUT0_VOUT_2V7
+#define ENABLE_DCDC_0      1
+#define ENABLE_DCDC_1      1
 
 #define DEVICE_NAME "FoxSnackV3DFU"
 
@@ -35,15 +37,13 @@
 /* LED
  *------------------------------------------------------------------*/
 #define LEDS_NUMBER           1
-#define LED_PRIMARY_PIN       _PINNUM(0, 12) // red
+#define LED_PRIMARY_PIN       _PINNUM(0, 12) // red, also used for breathing
 #define LED_STATE_ON          1
 
 #define LED_RGB_RED_PIN       _PINNUM(0, 12)
 #define LED_RGB_GREEN_PIN     _PINNUM(0, 8)
 #define LED_RGB_BLUE_PIN      _PINNUM(1, 9)
-#define BOARD_RGB_BRIGHTNESS  0x404040
-
-#define NEOPIXELS_NUMBER      0
+#define BOARD_RGB_BRIGHTNESS  0x202020
 
 /*------------------------------------------------------------------*/
 /* BUTTON
