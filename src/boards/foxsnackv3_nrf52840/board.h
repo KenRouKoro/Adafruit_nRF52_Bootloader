@@ -35,12 +35,12 @@
 /* LED
  *------------------------------------------------------------------*/
 #define LEDS_NUMBER           1
-#define LED_PRIMARY_PIN       _PINNUM(0, 31) // red
+#define LED_PRIMARY_PIN       _PINNUM(0, 12) // red
 #define LED_STATE_ON          1
 
-#define LED_RGB_RED_PIN       _PINNUM(0, 31)
-#define LED_RGB_GREEN_PIN     _PINNUM(0, 2)
-#define LED_RGB_BLUE_PIN      _PINNUM(0, 29)
+#define LED_RGB_RED_PIN       _PINNUM(0, 12)
+#define LED_RGB_GREEN_PIN     _PINNUM(0, 8)
+#define LED_RGB_BLUE_PIN      _PINNUM(1, 9)
 #define BOARD_RGB_BRIGHTNESS  0x404040
 
 #define NEOPIXELS_NUMBER      0
