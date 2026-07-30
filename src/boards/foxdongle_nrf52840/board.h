@@ -35,6 +35,7 @@
 #define LED_PRIMARY_PIN       _PINNUM(0, 8)// blue
 #define LED_SECONDARY_PIN     _PINNUM(0, 12)// red
 #define LED_STATE_ON          1
+#define LED_RGB_COMMON_CATHODE // LEDs are common-cathode (driven high to light)
 
 #define NEOPIXELS_NUMBER      0
 

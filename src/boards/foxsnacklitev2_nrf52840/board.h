@@ -42,6 +42,7 @@
 #define LED_RGB_GREEN_PIN     _PINNUM(0, 2)
 #define LED_RGB_BLUE_PIN      _PINNUM(0, 29)
 #define BOARD_RGB_BRIGHTNESS  0x202020
+#define LED_RGB_COMMON_CATHODE // RGB LED is common-cathode (driven high to light)
 
 /*------------------------------------------------------------------*/
 /* BUTTON
