@@ -43,10 +43,7 @@
 /*------------------------------------------------------------------*/
 /* BUTTON
  *------------------------------------------------------------------*/
-#define BUTTONS_NUMBER        2
-#define BUTTON_1              _PINNUM(0, 18)
-// Button 2 is from FoxSmol expansion board.
-#define BUTTON_2              _PINNUM(0, 13)
+#define BUTTON_DFU            _PINNUM(0, 13) // functional button (P0.18 is RESET)
 #define BUTTON_PULL           NRF_GPIO_PIN_PULLUP
 
 //--------------------------------------------------------------------+

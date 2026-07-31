@@ -39,9 +39,7 @@
 /*------------------------------------------------------------------*/
 /* BUTTON
  *------------------------------------------------------------------*/
-#define BUTTONS_NUMBER    2                 // none connected at all
-#define BUTTON_1          _PINNUM(0, 18)    // unusable: RESET
-#define BUTTON_2          _PINNUM(0, 17)     // SW1 ON Board
+#define BUTTON_DFU        _PINNUM(0, 17)     // SW1 on board (P0.18 is RESET)
 #define BUTTON_PULL       NRF_GPIO_PIN_PULLUP
 
 //--------------------------------------------------------------------+
