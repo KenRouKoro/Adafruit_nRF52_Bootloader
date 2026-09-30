@@ -405,6 +405,9 @@ static uint32_t rgb_color;
 static bool temp_color_active = false;
 
 // Triangle wave over one breathing cycle: 0 at both ends, 0xff in the middle.
+// Only needed when something actually breathes, otherwise -Wunused-function fires on
+// boards without any LED (e.g. ecan_emit_nrf52833).
+#if (LEDS_NUMBER > 0 && !defined(LED_PRIMARY_SHARES_RGB_PIN)) || defined(LED_RGB_BREATHING)
 static uint32_t led_breath_level(uint32_t cycle_length) {
   if (cycle_length < 2) {
     return 0;
@@ -417,6 +420,7 @@ static uint32_t led_breath_level(uint32_t cycle_length) {
   }
   return 0xff * cycle / half_cycle;
 }
+#endif
 
 void led_tick(void) {
 #if LEDS_NUMBER > 0 && !defined(LED_PRIMARY_SHARES_RGB_PIN)
