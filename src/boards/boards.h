@@ -75,6 +75,8 @@ void board_teardown(void);
 // LED
 //--------------------------------------------------------------------+
 
+// Status LED palette: green = host attached, blue = bootloader idle/writing,
+// red = error only.
 enum {
   STATE_BOOTLOADER_STARTED = 0,
   STATE_USB_MOUNTED,
@@ -84,7 +86,8 @@ enum {
   STATE_WRITING_STARTED,
   STATE_WRITING_FINISHED,
   STATE_BLE_CONNECTED,
-  STATE_BLE_DISCONNECTED
+  STATE_BLE_DISCONNECTED,
+  STATE_ERROR
 };
 
 void led_pwm_init(uint32_t led_index, uint32_t led_pin);

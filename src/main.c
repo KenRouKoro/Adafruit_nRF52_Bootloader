@@ -84,12 +84,11 @@ extern void tusb_hal_nrf_power_event(uint32_t event);
 #endif
 
 /*
- * Blinking patterns:
- * - DFU Serial     : LED Status blink
- * - DFU OTA        : LED Status & Conn blink at the same time
- * - DFU Flashing   : LED Status blink 2x fast
- * - Factory Reset  : LED Status blink 2x fast
- * - Fatal Error    : LED Status & Conn blink one after another
+ * LED indication, see led_state() in boards.c. RGB/NeoPixel status LEDs show the
+ * colors, single-color LEDs indicate the same states by breathing rate.
+ * - Green : host attached (USB drive mounted, or BLE connected)
+ * - Blue  : bootloader idle (slow breathing) or writing firmware (fast breathing)
+ * - Red   : errors only
  */
 
 /* Magic that written to NRF_POWER->GPREGRET by application when it wish to go into DFU

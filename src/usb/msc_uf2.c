@@ -185,7 +185,7 @@ void tud_msc_write10_complete_cb(uint8_t lun)
 
     bootloader_dfu_update_process(update_status);
 
-    led_state(STATE_WRITING_FINISHED);
+    led_state(STATE_ERROR);
   }
   else if ( _wr_state.numBlocks )
   {

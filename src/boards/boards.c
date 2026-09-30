@@ -40,6 +40,22 @@ void neopixel_write(uint8_t* pixels);
 void neopixel_teardown(void);
 #endif
 
+// A board whose plain status LED pin is also one of the RGB channels cannot drive both:
+// one pin driven by two PWM channels is not supported by the hardware. Such a pin is
+// skipped and the RGB status LED carries the breathing indication instead.
+#if defined(LED_PRIMARY_PIN) && defined(LED_RGB_RED_PIN) && defined(LED_RGB_GREEN_PIN) && defined(LED_RGB_BLUE_PIN) && \
+    (LED_PRIMARY_PIN == LED_RGB_RED_PIN || LED_PRIMARY_PIN == LED_RGB_GREEN_PIN || LED_PRIMARY_PIN == LED_RGB_BLUE_PIN)
+#define LED_PRIMARY_SHARES_RGB_PIN 1
+#endif
+
+// The plain LED breathes the current state at its configured rate when the board has one.
+// Otherwise the RGB status LED itself is modulated with the state color picked by
+// led_state(): led_tick() scales it by the breathing curve (see led_breath_level()).
+#if defined(LED_RGB_RED_PIN) && defined(LED_RGB_GREEN_PIN) && defined(LED_RGB_BLUE_PIN) && \
+    (LEDS_NUMBER == 0 || defined(LED_PRIMARY_SHARES_RGB_PIN))
+#define LED_RGB_BREATHING 1
+#endif
+
 //--------------------------------------------------------------------+
 // IMPLEMENTATION
 //--------------------------------------------------------------------+
@@ -84,7 +100,7 @@ void board_init(void) {
 #endif
   NRFX_DELAY_US(100); // wait for the pin state is stable
 
-#if LEDS_NUMBER > 0
+#if LEDS_NUMBER > 0 && !defined(LED_PRIMARY_SHARES_RGB_PIN)
   // use PMW0 for LED RED
   led_pwm_init(LED_PRIMARY, LED_PRIMARY_PIN);
   #if LEDS_NUMBER > 1
@@ -385,56 +401,75 @@ static uint32_t primary_cycle_length;
 static uint32_t secondary_cycle_length;
 #endif
 
-void led_tick(void) {
-#if LEDS_NUMBER > 0
-  uint32_t millis = _systick_count;
+static uint32_t rgb_color;
+static bool temp_color_active = false;
 
-  uint32_t cycle = millis % primary_cycle_length;
-  uint32_t half_cycle = primary_cycle_length / 2;
-  if (cycle > half_cycle) {
-    cycle = primary_cycle_length - cycle;
+// Triangle wave over one breathing cycle: 0 at both ends, 0xff in the middle.
+static uint32_t led_breath_level(uint32_t cycle_length) {
+  if (cycle_length < 2) {
+    return 0;
   }
-  uint16_t duty_cycle = 0x4f * cycle / half_cycle;
+
+  uint32_t cycle = _systick_count % cycle_length;
+  uint32_t const half_cycle = cycle_length / 2;
+  if (cycle > half_cycle) {
+    cycle = cycle_length - cycle;
+  }
+  return 0xff * cycle / half_cycle;
+}
+
+void led_tick(void) {
+#if LEDS_NUMBER > 0 && !defined(LED_PRIMARY_SHARES_RGB_PIN)
+  uint16_t duty_cycle = 0x4f * led_breath_level(primary_cycle_length) / 0xff;
   #if LED_STATE_ON == 1 && !defined(LED_RGB_COMMON_CATHODE)
   duty_cycle = 0xff - duty_cycle;
   #endif
   led_pwm_duty_cycle(LED_PRIMARY, duty_cycle);
 
   #ifdef LED_SECONDARY_PIN
-  cycle = millis % secondary_cycle_length;
-  half_cycle = secondary_cycle_length / 2;
-  if (cycle > half_cycle) {
-      cycle = secondary_cycle_length - cycle;
-  }
-  duty_cycle = 0x8f * cycle / half_cycle;
+  duty_cycle = 0x8f * led_breath_level(secondary_cycle_length) / 0xff;
   #if LED_STATE_ON == 1 && !defined(LED_RGB_COMMON_CATHODE)
   duty_cycle = 0xff - duty_cycle;
   #endif
   led_pwm_duty_cycle(LED_SECONDARY, duty_cycle);
   #endif
 #endif
-}
 
-static uint32_t rgb_color;
-static bool temp_color_active = false;
+#ifdef LED_RGB_BREATHING
+  // Breathe the color picked by led_state(). Write only when the level changes, since
+  // neopixel_write() re-triggers the PWM0 sequence once per RGB channel.
+  static uint32_t last_level = ~0UL;
+  uint32_t const level = led_breath_level(primary_cycle_length);
+  if (level != last_level) {
+    last_level = level;
+
+    uint8_t rgb[3] = {
+        (uint8_t) ((rgb_color & 0xff) * level / 0xff),          // blue
+        (uint8_t) (((rgb_color >> 8) & 0xff) * level / 0xff),   // green
+        (uint8_t) (((rgb_color >> 16) & 0xff) * level / 0xff),  // red
+    };
+    neopixel_write(rgb);
+  }
+#endif
+}
 
 void led_state(uint32_t state) {
   uint32_t new_rgb_color = rgb_color;
   uint32_t temp_color = 0;
   switch (state) {
     case STATE_USB_MOUNTED:
-      new_rgb_color = 0x00ff00;
+      new_rgb_color = 0x00ff00; // green: host has the drive mounted
       primary_cycle_length = 3000;
       break;
 
     case STATE_BOOTLOADER_STARTED:
     case STATE_USB_UNMOUNTED:
-      new_rgb_color = 0xff0000;
+      new_rgb_color = 0x0000ff; // blue: idle, waiting for the host
       primary_cycle_length = 300;
       break;
 
     case STATE_WRITING_STARTED:
-      temp_color = 0xff0000;
+      temp_color = 0x0000ff;    // blue: updating, faster than idle
       primary_cycle_length = 100;
       break;
 
@@ -444,7 +479,7 @@ void led_state(uint32_t state) {
       break;
 
     case STATE_BLE_CONNECTED:
-      new_rgb_color = 0x0000ff;
+      new_rgb_color = 0x00ff00; // green: host is connected
       #ifdef LED_SECONDARY_PIN
       secondary_cycle_length = 3000;
       #else
@@ -453,12 +488,17 @@ void led_state(uint32_t state) {
       break;
 
     case STATE_BLE_DISCONNECTED:
-      new_rgb_color = 0xff00ff;
+      new_rgb_color = 0x0000ff; // blue: idle, waiting for the host
       #ifdef LED_SECONDARY_PIN
       secondary_cycle_length = 300;
       #else
       primary_cycle_length = 300;
       #endif
+      break;
+
+    case STATE_ERROR:
+      new_rgb_color = 0xff0000; // red: errors only
+      primary_cycle_length = 100;
       break;
 
     default:
@@ -471,10 +511,14 @@ void led_state(uint32_t state) {
     final_color = (uint8_t*) &temp_color;
     temp_color_active = true;
   } else if (new_rgb_color != rgb_color) {
+    // A steady color supersedes any pending temp color.
     final_color = (uint8_t*) &new_rgb_color;
     rgb_color = new_rgb_color;
+    temp_color_active = false;
   } else if (temp_color_active) {
+    // Release the temp color, back to the steady color.
     final_color = (uint8_t*) &rgb_color;
+    temp_color_active = false;
   }
 
 #if defined(LED_NEOPIXEL) || defined(LED_RGB_RED_PIN) || defined(LED_APA102_CLK)
